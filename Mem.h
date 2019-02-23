@@ -16,4 +16,6 @@ public:
     {
         delete[] ptr;
     }
+    void KEKcheburek()
+    {}
 };
