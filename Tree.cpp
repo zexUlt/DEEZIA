@@ -306,7 +306,7 @@ int RBTree::getBlackHeight(Node *&node)
 RBTree::SetIterator::SetIterator(Node* node)
 {
     this->current = node;
-    //this->tree =;
+    //this->tree =
 
 }
 

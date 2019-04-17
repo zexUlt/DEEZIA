@@ -1,5 +1,5 @@
 //
-// Created by zexult on 28.03.19.
+// Created by zexult on 28.03.19
 //
 
 #ifndef DEEZIA_SET_H

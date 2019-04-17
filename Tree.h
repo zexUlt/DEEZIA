@@ -42,7 +42,7 @@ public:
     bool find(int);
     Node* minimalNode(Node *& _root);
     Node* maximalNode(Node *& _root);
-    //void merge(RBTree);
+    //void merge(RBTree)
 
     class SetIterator {
     private:
