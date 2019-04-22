@@ -2,18 +2,21 @@
 // Created by zexult on 27.03.19.
 //
 
-#include "Tree.h"
+#include "Mem.h"
+#include "RBTree.h"
 
-Node::Node(int data)
+/** Node implementation **/
+Node::Node(void* data)
 {
-    this->value = data;
+    Mem m;
+    this->value = m.allocMem(data);
     color = RED;
     left = right = parent = nullptr;
 }
 
-RBTree::RBTree() {
-    root = nullptr;
-}
+/**                     **/
+
+/** START Protected methods of RBTree **/
 
 bool RBTree::getColor(Node *&node)
 {
@@ -31,29 +34,12 @@ void RBTree::setColor(Node *&node, bool color)
     node->color = color;
 }
 
-bool RBTree::find(int val)
-{
-    Node *pivot = this->root;
-    bool found = false;
-    for(;!found;)
-    {
-        if(pivot->value == val)
-            found = true;
-        else if(pivot->value < val){
-            pivot = pivot->right;
-        } else
-            pivot = pivot->left;
-    }
-
-    return found;
-}
-
 Node* RBTree::binSearchInsert(Node *& root, Node *&ptr)
 {
     if(root == nullptr)
         return ptr;
 
-    if(ptr->value < root->value) {
+    if(memcmp(ptr->value,root->value, sizeof(root->value)) < 0) {
         root->left = binSearchInsert(root->left, ptr);
         root->left->parent = root;
     } else {
@@ -62,33 +48,6 @@ Node* RBTree::binSearchInsert(Node *& root, Node *&ptr)
     }
 
     return root;
-}
-
-void RBTree::insertVal(int data)
-{
-    Node *node = new Node(data);
-    root = binSearchInsert(root, node);
-    recolorAfIns(node);
-}
-
-void RBTree::rotateLeft(Node *&node) {
-    Node *pivot = node->right;
-    node->right = pivot->left;
-
-    if(node->right != nullptr)
-        node->right->parent = node;
-
-    pivot->parent = node->right->parent;
-
-    if(node->parent == nullptr)
-        root = pivot;
-    else if(node == node->parent->left)
-        node->parent->left = pivot;
-    else
-        node->parent->right = pivot;
-
-    pivot->left = node;
-    node->parent = pivot;
 }
 
 void RBTree::rotateRight(Node *&node)
@@ -112,7 +71,27 @@ void RBTree::rotateRight(Node *&node)
     node->parent = pivot;
 }
 
-void RBTree::recolorAfIns(Node *&node)
+void RBTree::rotateLeft(Node *&node) {
+    Node *pivot = node->right;
+    node->right = pivot->left;
+
+    if(node->right != nullptr)
+        node->right->parent = node;
+
+    pivot->parent = node->right->parent;
+
+    if(node->parent == nullptr)
+        root = pivot;
+    else if(node == node->parent->left)
+        node->parent->left = pivot;
+    else
+        node->parent->right = pivot;
+
+    pivot->left = node;
+    node->parent = pivot;
+}
+
+void RBTree::recolorAfterInsert(Node *&node)
 {
     Node *parent = nullptr;
     Node *grandparent = nullptr;
@@ -141,7 +120,7 @@ void RBTree::recolorAfIns(Node *&node)
     setColor(root, BLACK);
 }
 
-void RBTree::recolorAfDel(Node *&node)
+void RBTree::recolorAfterDelete(Node *&node)
 {
     if(node == nullptr)
         return;
@@ -238,15 +217,15 @@ void RBTree::recolorAfDel(Node *&node)
     }
 }
 
-Node* RBTree::binSearchDelete(Node *& root, int val)
+Node* RBTree::binSearchDelete(Node *& root, void* val)
 {
     if(root == nullptr)
         return root;
 
-    if(val < root->value)
+    if(memcmp(val,root->value, sizeof(root->value)) < 0)
         return binSearchDelete(root->left, val);
 
-    if(val > root->value)
+    if(memcmp(val,root->value, sizeof(root->value)) > 0)
         return binSearchDelete(root->right, val);
 
     if(root->right == nullptr || root->left == nullptr)
@@ -257,10 +236,56 @@ Node* RBTree::binSearchDelete(Node *& root, int val)
     return binSearchDelete(root->right, val);
 }
 
-void RBTree::deleteVal(int val)
+
+int RBTree::getBlackHeight(Node *&node)
 {
-    Node *node = binSearchDelete(root, val);
-    recolorAfDel(node);
+    int blackheight = 0;
+    for(;node != nullptr;) {
+        if(getColor(node) == BLACK)
+            blackheight++;
+        node = node->left;
+    }
+    return blackheight;
+}
+
+/**  END OF PROTECTED METHODS   **/
+
+
+/** START GETTERS **/
+
+int RBTree::getSize()
+{
+    return this->_size;
+}
+
+Node*& RBTree::getRoot()
+{
+    return this->root;
+}
+
+RBTree::SetIterator* RBTree::getEnd()
+{
+    return _end;
+}
+
+Node* RBTree::getBegin()
+{
+    return this->_begin;
+}
+
+/** END GETTERS **/
+
+/** START PUBLIC METHODS **/
+
+Node* RBTree::maximalNode(Node *&node)
+{
+    Node* ptr = node;
+
+    for(;ptr->right != nullptr;) {
+        ptr = ptr->right;
+    }
+
+    return ptr;
 }
 
 Node* RBTree::minimalNode(Node *&node)
@@ -274,41 +299,51 @@ Node* RBTree::minimalNode(Node *&node)
     return ptr;
 }
 
-Node*& RBTree::getRoot()
+bool RBTree::find(void* val)
 {
-    return this->root;
-}
-
-Node* RBTree::maximalNode(Node *&node)
-{
-    Node* ptr = node;
-
-    for(;ptr->right != nullptr;) {
-        ptr = ptr->right;
+    Node *pivot = this->root;
+    bool found = false;
+    for(;!found;)
+    {
+        if(pivot->value == val)
+            found = true;
+        else if(pivot->value < val){
+            pivot = pivot->right;
+        } else
+            pivot = pivot->left;
     }
 
-    return ptr;
+    return found;
 }
 
-int RBTree::getBlackHeight(Node *&node)
+int RBTree::insertVal(void* data, size_t _size)
 {
-    int blackheight = 0;
-    for(;node != nullptr;) {
-        if(getColor(node) == BLACK)
-            blackheight++;
-        node = node->left;
-    }
-    return blackheight;
+    Node *node = new Node(data);
+    root = binSearchInsert(root, node);
+    recolorAfterInsert(node);
+    _begin = minimalNode(this->root);
+    _size++;
+
+    return 0;
 }
+
+void RBTree::deleteVal(void* val)
+{
+    Node *node = binSearchDelete(root, val);
+    recolorAfterDelete(node);
+    _size--;
+}
+
+/** END PUBLIC METHODS **/
 
 /** Iterator implementation **/
 
-RBTree::SetIterator::SetIterator(Node* node)
+RBTree::SetIterator::SetIterator(RBTree* tr)
 {
-    this->current = node;
-    //this->tree =
-
+    this->tree = tr;
+    this->current = tr->_begin;
 }
+
 
 Node* RBTree::SetIterator::searchNextUpwards(Node* cur)
 {
@@ -332,8 +367,8 @@ Node* RBTree::SetIterator::searchNextDownwards(Node *cur)
 
 void RBTree::SetIterator::goToNext()
 {
-    if(this->current == tree->minimalNode(tree->root))
-        this->current = this->_end;
+    if(this->current == tree->maximalNode(tree->root))
+        this->current = this->tree->_end->current;
 
     if(this->current == this->current->parent->left) // If current node is located at the left subtree
         this->current = this->current->parent;
@@ -348,10 +383,11 @@ void RBTree::SetIterator::goToNext()
 
 bool RBTree::SetIterator::hasNext()
 {
-    return ( (this->current != this->_end) && (searchNextUpwards(this->current) != nullptr) ) || (this->current == this->current->parent->right);
+    return ( (this->current != this->tree->_end->current) && (searchNextUpwards(this->current) != nullptr) ) || (this->current == this->current->parent->right);
+    //     If current node is not in the end of the tree AND   if node is in the left subtree from root      OR  node is in the right branch of any subtree
 }
 
-int RBTree::SetIterator::getElement(size_t& size)
+void* RBTree::SetIterator::getElement(size_t& size)
 {
     //size_t *ptr = size;
     size = sizeof(this->current->value);
@@ -361,45 +397,11 @@ int RBTree::SetIterator::getElement(size_t& size)
 
 bool RBTree::SetIterator::equals(RBTree::SetIterator *right)
 {
-    return (this->current == right->current) && (this->_end == right->_end) && ;
+    return (this->current == right->current) && (this->tree->_end == right->tree->_end) && (this->tree->_begin == right->tree->_begin);
 }
 
 void RBTree::SetIterator::setCurrent(Node *node)
 {
     this->current = node;
 }
-
-Node* RBTree::SetIterator::getEnd()
-{
-    RBTree::SetIterator *it;
-    return it->_end;
-}
-/** ******************** **/
-/** Commented till good times
-void RBTree::merge(RBTree t2)
-{
-    int tmp;
-    Node *c, *tmp_ptr;
-    Node *root1 = this->root;
-    Node *root2 = t2.root;
-    int initialBlackHeight1 = getBlackHeight(root1);
-    int initialBlackHeight2 = getBlackHeight(root2);
-    if(initialBlackHeight1 < initialBlackHeight2) {
-        c = minimalNode(root2);
-        tnp = c->value;
-        t2.deleteVal(c->value);
-    } else {
-        c = minimalNode(root1);
-        tmp = c->value;
-        t2.deleteVal(c->value);
-        root2 = t2.root;
-        if(initialBlackHeight1 != getBlackHeight(root2)) {
-            t2.insertVal(c->value);
-            root2 = t2.root;
-            c = maximalNode(root1);
-            tmp = c->value;
-            deleteVal(c->value);
-            root1 = this->root;
-        }
-    }
-} **/
+/** END ITERATOR IMPLEMENTATION **/

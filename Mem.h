@@ -2,18 +2,20 @@
 #include "MemoryManager.h"
 
 // Простейший менеджер памяти, использует ::new и ::delete
+// Менеджер памяти еще проще, чем предложенный П.А. Алисейчиком использует malloc и free
 class Mem: public MemoryManager
 {
 public:
-    Mem(size_t sz): MemoryManager(sz) {}
+    explicit Mem(size_t sz): MemoryManager(sz) {}
 
-    void* allocMem(size_t sz)
+    void* allocMem(size_t sz) final
     {
-        return new char[sz];
+        void* ptr = (void*)malloc(sz);
+        return ptr;
     }
 
-    void freeMem(void* ptr)
+    void freeMem(void* ptr) final
     {
-        delete[] ptr;
+        free(ptr);
     }
 };

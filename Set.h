@@ -2,27 +2,27 @@
 // Created by zexult on 28.03.19
 //
 
-#ifndef DEEZIA_SET_H
-#define DEEZIA_SET_H
+#pragma once
 
-#include "Tree.h"
+#include "RBTree.h"
+#include "SetAbstract.h"
+#include "MemoryManager.h"
 
-class Set {
+class Set : public AbstractSet, public RBTree{
 private:
     RBTree tree;
 public:
-    explicit Set(int);
-    int insert(int, size_t);
-    int size();
-    size_t max_bytes();
-    RBTree::SetIterator* find(void *elem, size_t size);
-    RBTree::SetIterator* newIterator();
-    RBTree::SetIterator* begin();
-    RBTree::SetIterator* end();
+    explicit Set(MemoryManager &mem): tree(mem), AbstractSet(mem){};
+    int insert(void*, size_t) final;
+    int size() final;
+    size_t max_bytes() final;
+    RBTree::SetIterator* find(void *elem, size_t size) final;
+    RBTree::SetIterator* newIterator() final;
+    RBTree::SetIterator* begin() final;
+    RBTree::SetIterator* end() final;
     void remove(RBTree::SetIterator*);
-    void clear();
-    bool empty();
+    void clear() final;
+    bool empty() final;
 };
 
 
-#endif //DEEZIA_SET_H
