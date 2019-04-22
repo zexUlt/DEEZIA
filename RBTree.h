@@ -23,21 +23,21 @@ public:
 
 class RBTree {
 public:
-    class SetIterator : public Iterator {
+class SetIterator : public Container::Iterator {
     private:
         RBTree *tree;
+        Node *current;
 
         Node* searchNextUpwards(Node*);
-        Node* searchNextDownwards(Node*);
+        Node* searchNextDownwards(Node*); // finds minimum in the subtree
     public:
-        Node *current;
         explicit SetIterator(RBTree*);
        // explicit SetIterator(Node*, RBTree*);
         void setCurrent(Node*);
-        void* getElement (size_t&);// final;
-        void goToNext();// final;
-        bool hasNext();// final;
-        bool equals(SetIterator*);
+        void* getElement (size_t&) final;
+        void goToNext() final;
+        bool hasNext() final;
+        bool equals(Container::Iterator*) final;
     };
 private:
     int _size;

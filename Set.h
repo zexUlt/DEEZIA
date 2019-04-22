@@ -8,11 +8,11 @@
 #include "SetAbstract.h"
 #include "MemoryManager.h"
 
-class Set : public AbstractSet, public RBTree{
+friend class Set : public AbstractSet, public RBTree{
 private:
     RBTree tree;
 public:
-    explicit Set(MemoryManager &mem): tree(mem), AbstractSet(mem){};
+    explicit Set(MemoryManager &mem):  AbstractSet(mem), tree(mem){};
     int insert(void*, size_t) final;
     int size() final;
     size_t max_bytes() final;

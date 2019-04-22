@@ -359,26 +359,21 @@ Node* RBTree::SetIterator::searchNextDownwards(Node *cur)
 {
     if(cur == nullptr)
         return nullptr;
-    
-    if(cur->parent != nullptr && cur->right == nullptr)
+
+    if(cur->left == nullptr)
         return cur;
-    else searchNextDownwards(cur->right);
+    else searchNextDownwards(cur->left);
 }
 
 void RBTree::SetIterator::goToNext()
 {
+
     if(this->current == tree->maximalNode(tree->root))
         this->current = this->tree->_end->current;
 
-    if(this->current == this->current->parent->left) // If current node is located at the left subtree
-        this->current = this->current->parent;
-
-    if(this->current == this->current->parent->right && searchNextUpwards(this->current) != nullptr && this->current->right == nullptr)
-        this->current = searchNextUpwards(this->current); // If current node is located at the right subtree of the left subtree from root
-    else if(this->current == this->current->parent->right && searchNextUpwards(this->current) != nullptr && this->current->right != nullptr)
-            this->current = this->current->right;
-    else this->current = searchNextDownwards(this->current); // If current node is located at the right subtree of the right subtree from root or at root itself
-
+    if(this->current->right != nullptr)
+        this->current = searchNextDownwards(this->current);
+    else this->current = searchNextUpwards(this->current);
 }
 
 bool RBTree::SetIterator::hasNext()
@@ -395,8 +390,9 @@ void* RBTree::SetIterator::getElement(size_t& size)
     return this->current->value;
 }
 
-bool RBTree::SetIterator::equals(RBTree::SetIterator *right)
+bool RBTree::SetIterator::equals(Container::Iterator *right)
 {
+    right = (RBTree::SetIterator*) right;
     return (this->current == right->current) && (this->tree->_end == right->tree->_end) && (this->tree->_begin == right->tree->_begin);
 }
 
