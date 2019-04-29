@@ -36,7 +36,6 @@ class SetIterator : public Container::Iterator {
     public:
         explicit SetIterator(RBTree*);
         explicit SetIterator(RBTree*, Node*);
-        void setCurrent(Node*);
         void* getElement (size_t&) final;
         void goToNext() final;
         bool hasNext() final;
@@ -59,7 +58,7 @@ protected:
     Node* binSearchDelete(Node*& _root, void* _value, size_t size);
 
     RBTree() = default;
-    explicit RBTree(MemoryManager& mem){root = _begin = nullptr; _end = nullptr; _end->setCurrent(nullptr); _size = 0;}
+    explicit RBTree(MemoryManager& mem){root = _begin = nullptr; _end = nullptr; _size = 0;}
 
     /** GETTERS **/
     Node* getBegin();

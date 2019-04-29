@@ -351,6 +351,7 @@ void RBTree::deleteVal(void* val, size_t size)
 {
     Node *node = binSearchDelete(root, val, size);
     recolorAfterDelete(node);
+    free(node->value);
     _size--;
 }
 
@@ -421,8 +422,4 @@ bool RBTree::SetIterator::equals(Container::Iterator *right)
     return (this->current == right_it->current) && (this->tree->_end == right_it->tree->_end) && (this->tree->_begin == right_it->tree->_begin);
 }
 
-void RBTree::SetIterator::setCurrent(Node *node)
-{
-    this->current = node;
-}
 /** END ITERATOR IMPLEMENTATION **/

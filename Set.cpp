@@ -35,7 +35,6 @@ size_t Set::max_bytes()
 Container::Iterator* Set::begin()
 {
     RBTree::SetIterator* it = new SetIterator(&this->tree);
-    it->setCurrent(this->tree.getBegin());
     return (Container::Iterator*) it;
 }
 
