@@ -8,8 +8,10 @@
 /** Node implementation **/
 Node::Node(void* data, size_t size)
 {
+    data = (void*)malloc(size);
+
     this->__size = size;
-    this->value = data;
+    memcpy(this->value,data,size);
     this->color = RED;
     this->left = this->right = this->parent = nullptr;
 }
