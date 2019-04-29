@@ -42,10 +42,10 @@ class SetIterator : public Container::Iterator {
         bool equals(Container::Iterator*) final;
     };
 private:
-    int _size;
-    Node* root;
-    Node* _begin;
-    SetIterator* _end;
+    int _size = 0;
+    Node* root = nullptr;
+    Node* _begin = nullptr;
+    SetIterator* _end = nullptr;
 protected:
     void rotateLeft(Node*& _pivot);
     void rotateRight(Node*& _pivot);

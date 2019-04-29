@@ -8,10 +8,10 @@
 /** Node implementation **/
 Node::Node(void* data, size_t size)
 {
-    data = (void*)malloc(size);
+    this->value = (void*)malloc(size);
 
     this->__size = size;
-    memcpy(this->value,data,size);
+    this->value = data;
     this->color = RED;
     this->left = this->right = this->parent = nullptr;
 }
@@ -305,9 +305,14 @@ bool RBTree::find(void* val, size_t size)
 {
     Node *pivot = this->root;
     bool found = false;
+
+
     for(;!found;)
     {
-        if(size == pivot->__size || memcmp(pivot->value, val, size) == 0)
+        if(pivot == nullptr)
+            break;
+
+        if(size == pivot->__size && memcmp(pivot->value, val, size) == 0)
             found = true;
         else if(pivot->__size < size || (pivot->__size == size && memcmp(pivot->value, val, size) < 0)) {
             pivot = pivot->right;

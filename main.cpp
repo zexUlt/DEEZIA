@@ -12,9 +12,10 @@ int main()
     Set s(mem);
 
     int a = 10;
-    char c = 'a';
+    char c = 5;
 
-    cout << s.insert(&a, sizeof(a)) << s.insert(&c, sizeof(c)) << endl;
+    cout << s.insert(&a, sizeof(a)) << endl;
+    cout << s.insert(&c, sizeof(c)) << endl;
 
     return 0;
 }
