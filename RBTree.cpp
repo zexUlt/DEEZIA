@@ -6,12 +6,12 @@
 #include "RBTree.h"
 
 /** Node implementation **/
-Node::Node(void* data)
+Node::Node(void* data, size_t size)
 {
-    Mem m;
-    this->value = m.allocMem(data);
-    color = RED;
-    left = right = parent = nullptr;
+    this->__size = size;
+    this->value = data;
+    this->color = RED;
+    this->left = this->right = this->parent = nullptr;
 }
 
 /**                     **/
@@ -39,7 +39,7 @@ Node* RBTree::binSearchInsert(Node *& root, Node *&ptr)
     if(root == nullptr)
         return ptr;
 
-    if(memcmp(ptr->value,root->value, sizeof(root->value)) < 0) {
+    if( (ptr->__size == root->__size && memcmp(ptr->value,root->value, ptr->__size) < 0 ) || ptr->__size < root->__size) {
         root->left = binSearchInsert(root->left, ptr);
         root->left->parent = root;
     } else {
@@ -217,23 +217,23 @@ void RBTree::recolorAfterDelete(Node *&node)
     }
 }
 
-Node* RBTree::binSearchDelete(Node *& root, void* val)
+Node* RBTree::binSearchDelete(Node *& root, void* val, size_t size)
 {
     if(root == nullptr)
         return root;
 
-    if(memcmp(val,root->value, sizeof(root->value)) < 0)
-        return binSearchDelete(root->left, val);
+    if( (size == root->__size && memcmp(val,root->value, sizeof(root->value)) < 0) || size < root->__size)
+        return binSearchDelete(root->left, val, size);
 
     if(memcmp(val,root->value, sizeof(root->value)) > 0)
-        return binSearchDelete(root->right, val);
+        return binSearchDelete(root->right, val, size);
 
     if(root->right == nullptr || root->left == nullptr)
         return root;
 
     Node *tmp = minimalNode(root->right);
     root->value = tmp->value;
-    return binSearchDelete(root->right, val);
+    return binSearchDelete(root->right, val, size);
 }
 
 
@@ -299,15 +299,15 @@ Node* RBTree::minimalNode(Node *&node)
     return ptr;
 }
 
-bool RBTree::find(void* val)
+bool RBTree::find(void* val, size_t size)
 {
     Node *pivot = this->root;
     bool found = false;
     for(;!found;)
     {
-        if(pivot->value == val)
+        if(size == pivot->__size || memcmp(pivot->value, val, size) == 0)
             found = true;
-        else if(pivot->value < val){
+        else if(pivot->__size < size || (pivot->__size == size && memcmp(pivot->value, val, size) < 0)) {
             pivot = pivot->right;
         } else
             pivot = pivot->left;
@@ -316,9 +316,27 @@ bool RBTree::find(void* val)
     return found;
 }
 
-int RBTree::insertVal(void* data, size_t _size)
+bool RBTree::find(void* val, size_t size, Node* node)
 {
-    Node *node = new Node(data);
+    Node *pivot = this->root;
+    bool found = false;
+    for(;!found;)
+    {
+        if(size == pivot->__size || memcmp(pivot->value, val, size) == 0) {
+            found = true;
+            node = pivot;
+        } else if(pivot->__size < size || (pivot->__size == size && memcmp(pivot->value, val, size) < 0)) {
+            pivot = pivot->right;
+        } else
+            pivot = pivot->left;
+    }
+
+    return found;
+}
+
+int RBTree::insertVal(void* data, size_t __size)
+{
+    Node *node = new Node(data, __size);
     root = binSearchInsert(root, node);
     recolorAfterInsert(node);
     _begin = minimalNode(this->root);
@@ -327,9 +345,9 @@ int RBTree::insertVal(void* data, size_t _size)
     return 0;
 }
 
-void RBTree::deleteVal(void* val)
+void RBTree::deleteVal(void* val, size_t size)
 {
-    Node *node = binSearchDelete(root, val);
+    Node *node = binSearchDelete(root, val, size);
     recolorAfterDelete(node);
     _size--;
 }
@@ -344,6 +362,11 @@ RBTree::SetIterator::SetIterator(RBTree* tr)
     this->current = tr->_begin;
 }
 
+RBTree::SetIterator::SetIterator(RBTree *tr, Node* node)
+{
+    this->tree = tr;
+    this->current = node;
+}
 
 Node* RBTree::SetIterator::searchNextUpwards(Node* cur)
 {
@@ -392,8 +415,8 @@ void* RBTree::SetIterator::getElement(size_t& size)
 
 bool RBTree::SetIterator::equals(Container::Iterator *right)
 {
-    right = (RBTree::SetIterator*) right;
-    return (this->current == right->current) && (this->tree->_end == right->tree->_end) && (this->tree->_begin == right->tree->_begin);
+    RBTree::SetIterator* right_it = (RBTree::SetIterator*) right;
+    return (this->current == right_it->current) && (this->tree->_end == right_it->tree->_end) && (this->tree->_begin == right_it->tree->_begin);
 }
 
 void RBTree::SetIterator::setCurrent(Node *node)

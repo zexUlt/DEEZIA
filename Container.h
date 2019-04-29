@@ -17,7 +17,7 @@ public:
     struct Error
     {
         char msg[256];
-        Error(const char *err_msg)
+        explicit Error(const char *err_msg)
         {
             strcpy(msg, err_msg);
         }
@@ -40,7 +40,7 @@ public:
         virtual bool equals(Iterator *right) = 0;
     };
 
-    Container(MemoryManager &mem): _memory(mem) {}
+    explicit Container(MemoryManager &mem): _memory(mem) {}
 
     // Функция возвращает значение, равное количеству элементов в контейнере.
     virtual int size() = 0;

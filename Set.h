@@ -4,25 +4,27 @@
 
 #pragma once
 
-#include "RBTree.h"
+
 #include "SetAbstract.h"
+#include "RBTree.h"
 #include "MemoryManager.h"
 
-friend class Set : public AbstractSet, public RBTree{
+class Set : public AbstractSet, public RBTree{
 private:
     RBTree tree;
 public:
-    explicit Set(MemoryManager &mem):  AbstractSet(mem), tree(mem){};
+    explicit Set(MemoryManager &mem):  AbstractSet(mem), tree(mem){}
     int insert(void*, size_t) final;
     int size() final;
     size_t max_bytes() final;
-    RBTree::SetIterator* find(void *elem, size_t size) final;
-    RBTree::SetIterator* newIterator() final;
-    RBTree::SetIterator* begin() final;
-    RBTree::SetIterator* end() final;
-    void remove(RBTree::SetIterator*);
+    Container::Iterator* find(void *elem, size_t size) final;
+    Container::Iterator* newIterator() final;
+    Container::Iterator* begin() final;
+    Container::Iterator* end() final;
+    void remove(Container::Iterator*) final;
     void clear() final;
     bool empty() final;
+    ~Set() override {}
 };
 
 
