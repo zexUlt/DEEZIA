@@ -47,8 +47,8 @@ Container::Iterator* Set::end()
 
 Container::Iterator* Set::find(void *elem, size_t size)
 {
-    Node* node;
-    this->tree.find(elem,size,node);
+    Node* node = nullptr;
+    this->tree.find(elem,size,&node);
     RBTree::SetIterator it(&(this->tree),node);
     Container::Iterator* iter = &it;
 

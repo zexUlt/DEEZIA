@@ -323,16 +323,16 @@ bool RBTree::find(void* val, size_t size)
     return found;
 }
 
-bool RBTree::find(void* val, size_t size, Node* node)
+bool RBTree::find(void* val, size_t size, Node** node)
 {
     Node *pivot = this->root;
     bool found = false;
     for(;!found;)
     {
-        if(size == pivot->__size || memcmp(pivot->value, val, size) == 0) {
+        if(size == pivot->__size && memcmp(pivot->value, val, size) == 0) {
             found = true;
-            node = pivot;
-        } else if(pivot->__size < size || (pivot->__size == size && memcmp(pivot->value, val, size) < 0)) {
+            *node = pivot;
+        } else if( pivot->__size < size || (pivot->__size == size && memcmp(pivot->value, val, size) < 0) ) {
             pivot = pivot->right;
         } else
             pivot = pivot->left;
@@ -415,8 +415,7 @@ bool RBTree::SetIterator::hasNext()
 
 void* RBTree::SetIterator::getElement(size_t& size)
 {
-    //size_t *ptr = size;
-    size = sizeof(this->current->value);
+    size = this->current->__size;
 
     return this->current->value;
 }

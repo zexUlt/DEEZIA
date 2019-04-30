@@ -24,7 +24,7 @@ public:
     void remove(Container::Iterator*) final;
     void clear() final;
     bool empty() final;
-    ~Set() override {}
+    ~Set() final = default;
 };
 
 

@@ -70,7 +70,7 @@ protected:
     int insertVal(void*, size_t);
     void deleteVal(void*, size_t);
     bool find(void*, size_t);
-    bool find(void*,size_t,Node*);
+    bool find(void*,size_t,Node**);
     Node* minimalNode(Node*& _root);
     Node* maximalNode(Node*& _root);
 };
