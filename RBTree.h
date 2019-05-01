@@ -53,19 +53,12 @@ protected:
     void recolorAfterDelete(Node*& _root);
     bool getColor(Node*&  _node);
     void setColor(Node*& _node, bool _color);
-    int getBlackHeight(Node*& _root); // For merge of two trees
+    //int getBlackHeight(Node*& _root);  For merge of two trees
     Node* binSearchInsert(Node*& _root, Node*& _node);
     Node* binSearchDelete(Node*& _root, void* _value, size_t size);
 
     RBTree() = default;
     explicit RBTree(MemoryManager& mem){root = _begin = nullptr; _end = nullptr; _size = 0;}
-
-    /** GETTERS **/
-    Node* getBegin();
-    SetIterator* getEnd();
-    Node*& getRoot();
-    int getSize();
-    /** GETTERS **/
 
     int insertVal(void*, size_t);
     void deleteVal(void*, size_t);

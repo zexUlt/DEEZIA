@@ -24,7 +24,7 @@ int Set::insert(void* elem, size_t _size)
 
 int Set::size()
 {
-    return this->tree.getSize();
+    return this->tree._size;
 }
 
 size_t Set::max_bytes()
@@ -34,14 +34,14 @@ size_t Set::max_bytes()
 
 Container::Iterator* Set::begin()
 {
-    RBTree::SetIterator* it = new SetIterator(&this->tree);
+    auto it = new SetIterator(&this->tree);
     return (Container::Iterator*) it;
 }
 
 Container::Iterator* Set::end()
 {
     RBTree::SetIterator *it;
-    it = this->tree.getEnd();
+    it = this->tree._end;
     return (Container::Iterator*)it;
 }
 
@@ -49,8 +49,8 @@ Container::Iterator* Set::find(void *elem, size_t size)
 {
     Node* node = nullptr;
     this->tree.find(elem,size,&node);
-    RBTree::SetIterator it(&(this->tree),node);
-    Container::Iterator* iter = &it;
+    auto it = new SetIterator(&(this->tree),node);
+    Container::Iterator* iter = it;
 
     return iter;
 }
@@ -67,14 +67,14 @@ Container::Iterator* Set::newIterator()
 
 void Set::remove(Container::Iterator *iter)
 {
-    RBTree::SetIterator *it = (RBTree::SetIterator*) iter;
+    auto *it = (RBTree::SetIterator*) iter;
     tree.deleteVal(it->current->value, it->current->__size);
     it->goToNext();
 }
 
 bool Set::empty()
 {
-    return tree.getRoot() == nullptr;
+    return tree.root == nullptr;
 }
 
 

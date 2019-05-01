@@ -239,43 +239,18 @@ Node* RBTree::binSearchDelete(Node *& root, void* val, size_t size)
 }
 
 
-int RBTree::getBlackHeight(Node *&node)
-{
-    int blackheight = 0;
-    for(;node != nullptr;) {
-        if(getColor(node) == BLACK)
-            blackheight++;
-        node = node->left;
-    }
-    return blackheight;
-}
+//int RBTree::getBlackHeight(Node *&node)
+//{
+//    int blackheight = 0;
+//    for(;node != nullptr;) {
+//        if(getColor(node) == BLACK)
+//            blackheight++;
+//        node = node->left;
+//    }
+//    return blackheight;
+//}
 
 /**  END OF PROTECTED METHODS   **/
-
-
-/** START GETTERS **/
-
-int RBTree::getSize()
-{
-    return this->_size;
-}
-
-Node*& RBTree::getRoot()
-{
-    return this->root;
-}
-
-RBTree::SetIterator* RBTree::getEnd()
-{
-    return _end;
-}
-
-Node* RBTree::getBegin()
-{
-    return this->_begin;
-}
-
-/** END GETTERS **/
 
 /** START PUBLIC METHODS **/
 
@@ -357,6 +332,7 @@ void RBTree::deleteVal(void* val, size_t size)
     Node *node = binSearchDelete(root, val, size);
     recolorAfterDelete(node);
     free(node->value);
+    delete node;
     _size--;
 }
 
