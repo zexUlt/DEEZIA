@@ -5,18 +5,20 @@
 #pragma once
 
 #include <bits/stdc++.h>
+#include "Exceptions.h"
 #include "Container.h"
 #include "MemoryManager.h"
 
-enum color{RED, BLACK, WHITE}; // WHITE is temporary color
+enum color{RED, BLACK, DOUBLE_BLACK}; // WHITE is temporary color
 
 struct Node {
 public:
     Node* left;
     Node* right;
     Node* parent;
-    bool color;
+    color _color;
     void* value;
+    int real_value;
     size_t __size;
 
     Node(void*,size_t);
@@ -27,10 +29,14 @@ class RBTree {
 public:
 class SetIterator : public Container::Iterator {
     friend class Set;
+    friend class RBTree;
     private:
+        Exceptions* e;
         RBTree *tree;
         Node *current;
+        bool isEnd;
 
+        Node* searchMaxInLeft(Node*);
         Node* searchNextUpwards(Node*);
         Node* searchNextDownwards(Node*); // finds minimum in the subtree
     public:
@@ -42,26 +48,26 @@ class SetIterator : public Container::Iterator {
         bool equals(Container::Iterator*) final;
     };
 private:
-    int _size = 0;
-    Node* root = nullptr;
-    Node* _begin = nullptr;
-    SetIterator* _end = nullptr;
+    int _size;
+    Node* root;
+    Node* _begin;
+    SetIterator* _end;
+
+    void DFSfullRemove(Node*);
 protected:
     void rotateLeft(Node*& _pivot);
     void rotateRight(Node*& _pivot);
     void recolorAfterInsert(Node*& _root);
     void recolorAfterDelete(Node*& _root);
-    bool getColor(Node*&  _node);
-    void setColor(Node*& _node, bool _color);
-    //int getBlackHeight(Node*& _root);  For merge of two trees
+    color getColor(Node*&  _node);
+    void setColor(Node*& _node, color _color);
     Node* binSearchInsert(Node*& _root, Node*& _node);
-    Node* binSearchDelete(Node*& _root, void* _value, size_t size);
-
+public:
     RBTree() = default;
-    explicit RBTree(MemoryManager& mem){root = _begin = nullptr; _end = nullptr; _size = 0;}
+    explicit RBTree(MemoryManager& mem){root = _begin = nullptr; _end = new SetIterator(this,nullptr); _end->isEnd = true; _size = 0;}
 
     int insertVal(void*, size_t);
-    void deleteVal(void*, size_t);
+    void deleteVal(Node*);
     bool find(void*, size_t);
     bool find(void*,size_t,Node**);
     Node* minimalNode(Node*& _root);

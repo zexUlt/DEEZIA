@@ -5,10 +5,7 @@
 
 /**
  * TODO List:
- * 1. Create Set constructor - 50%
- * 2. Create size calculating function - 100%
- * 3. Create recursive removing (clear) | Probably DFS - 0
- * 4. Create iterator constructor with proper memory allocation - 0
+ * 1. Do final tests for remove function.
  */
 
 #include "Set.h"
@@ -35,13 +32,19 @@ size_t Set::max_bytes()
 Container::Iterator* Set::begin()
 {
     auto it = new SetIterator(&this->tree);
-    return (Container::Iterator*) it;
+    if(!_size)
+        return end();
+    else {
+        it->current = tree.minimalNode(tree.root);
+        return (Container::Iterator *) it;
+    }
 }
 
 Container::Iterator* Set::end()
 {
-    RBTree::SetIterator *it;
-    it = this->tree._end;
+    Node* node = nullptr;
+    auto *it = new SetIterator(&(this->tree), node);
+    it->isEnd = true;
     return (Container::Iterator*)it;
 }
 
@@ -57,7 +60,7 @@ Container::Iterator* Set::find(void *elem, size_t size)
 
 void Set::clear()
 {
-
+    tree.DFSfullRemove(tree.root);
 }
 
 Container::Iterator* Set::newIterator()
@@ -68,13 +71,19 @@ Container::Iterator* Set::newIterator()
 void Set::remove(Container::Iterator *iter)
 {
     auto *it = (RBTree::SetIterator*) iter;
-    tree.deleteVal(it->current->value, it->current->__size);
+
+    if(it->isEnd)
+        throw e.END_ITERATOR_REMOVING(it);
+
+    Node* ptr = it->current;
+
     it->goToNext();
+    tree.deleteVal(ptr);
 }
 
 bool Set::empty()
 {
-    return tree.root == nullptr;
+    return _size == 0;
 }
 
 

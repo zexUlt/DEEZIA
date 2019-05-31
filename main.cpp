@@ -4,29 +4,28 @@
 
 #include "Set.h"
 #include "Mem.h"
+#include "ContainerTest.h"
 
 int main()
 {
     Mem mem(1000);
     Set s(mem);
 
+    size_t i,_size(5);
+    auto* ct = new ContainerTest(&s);
 
-    size_t size = 0;
-    int a = 10;
-    int c = 10;
+    printf("%e\n",ct->testInsert(_size));
 
-    cout << s.insert(&a, sizeof(a)) << endl;
-    cout << s.insert(&c, sizeof(c)) << endl;
 
-    Container::Iterator* it = s.find(&a, sizeof(a));
+    Container::Iterator* it = s.newIterator();
 
-    cout << *(int*)it->getElement(size) << " " << size << endl;
+    clock_t start = clock();
 
-    cout << s.size() << endl;
+    s.clear();
 
-    s.remove(it);
+    clock_t finish = clock();
 
-    cout << s.size() << endl;
+    cout << (double)(finish - start) / CLOCKS_PER_SEC << endl;
 
     return 0;
 }
