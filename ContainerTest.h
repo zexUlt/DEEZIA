@@ -10,14 +10,17 @@
 #include "Set.h"
 #include <ctime>
 
+
+
 class ContainerTest {
 private:
     Set *cont;
 public:
     explicit ContainerTest(Set*);
-    double testInsert(size_t);
-    double testRemove(size_t);
-    double printContainer();
+    double testFullremove(); // is working
+    double testInsert(size_t); // is working
+    double testRemove(size_t); // need fix
+    void printContainer(); // is working
 };
 
 
