@@ -9,11 +9,14 @@
 #include "Exceptions.h"
 #include "RBTree.h"
 #include "MemoryManager.h"
+#include <string>
 
 class Set : public AbstractSet, public RBTree{
+    friend class ContainerTest;
 private:
     Exceptions e;
     RBTree tree;
+    string name;
 public:
     explicit Set(MemoryManager &mem):  AbstractSet(mem), tree(mem), e("Something gone wrong."){}
     int insert(void*, size_t) final; // is working

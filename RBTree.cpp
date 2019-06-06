@@ -6,15 +6,15 @@
 #include "RBTree.h"
 
 /** Node implementation **/
-Node::Node(void* data, size_t size)
+Node::Node(void* data, size_t size, string _name)
 {
     value = malloc(size);
 
     __size = size;
     memcpy(value, data, size);
-    real_value = *(int*)value;
     _color = RED;
     left = right = parent = nullptr;
+    name = _name;
 }
 
 /**                     **/
@@ -320,9 +320,9 @@ bool RBTree::find(void* val, size_t size, Node** node)
     return found;
 }
 
-int RBTree::insertVal(void* data, size_t __size)
+int RBTree::insertVal(void* data, size_t __size, string __name)
 {
-    Node *node = new Node(data, __size);
+    Node *node = new Node(data, __size, __name);
     root = binSearchInsert(root, node);
     recolorAfterInsert(node);
     _size++;
@@ -340,13 +340,11 @@ void RBTree::deleteVal(Node* node)
     {
         Node* tmp = _end->searchMaxInLeft(this->root->left);
         memcpy(this->root->value, tmp->value, this->root->__size < tmp->__size ? tmp->__size : root->__size);
-        this->root->real_value = tmp->real_value;
         recolorAfterDelete(tmp);
     } else if(node == this->root && this->root->right != nullptr)
     {
         Node* tmp = _end->searchNextDownwards(this->root->right);
         memcpy(this->root->value, tmp->value, this->root->__size < tmp->__size ? tmp->__size : root->__size);
-        this->root->real_value = tmp->real_value;
         recolorAfterDelete(tmp);
     } else recolorAfterDelete(node);
     _size--;

@@ -15,7 +15,7 @@ int Set::insert(void* elem, size_t _size)
     if(this->tree.find(elem,_size))
         return 1;
     else {
-        return this->tree.insertVal(elem, _size);
+        return this->tree.insertVal(elem, _size, name);
     }
 }
 
@@ -32,7 +32,7 @@ size_t Set::max_bytes()
 Container::Iterator* Set::begin()
 {
     auto it = new SetIterator(&this->tree);
-    if(!_size)
+    if(!this->tree._size)
         return end();
     else {
         it->current = tree.minimalNode(tree.root);

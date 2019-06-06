@@ -8,8 +8,9 @@
 #include "Exceptions.h"
 #include "Container.h"
 #include "MemoryManager.h"
+#include <bits/stdc++.h>
 
-enum color{RED, BLACK, DOUBLE_BLACK}; // WHITE is temporary color
+enum color{RED, BLACK, DOUBLE_BLACK}; // DOUBLE_BLACK is temporary color
 
 struct Node {
 public:
@@ -18,18 +19,19 @@ public:
     Node* parent;
     color _color;
     void* value;
-    int real_value;
+    string name;
     size_t __size;
 
-    Node(void*,size_t);
+    Node(void*, size_t, string);
 };
 
 class RBTree {
-    friend class Set; // Check out
+    friend class Set;
 public:
 class SetIterator : public Container::Iterator {
     friend class Set;
     friend class RBTree;
+    friend class ContainerTest;
     private:
         Exceptions* e;
         RBTree *tree;
@@ -66,7 +68,7 @@ public:
     RBTree() = default;
     explicit RBTree(MemoryManager& mem){root = _begin = nullptr; _end = new SetIterator(this,nullptr); _end->isEnd = true; _size = 0;}
 
-    int insertVal(void*, size_t);
+    int insertVal(void*, size_t, string);
     void deleteVal(Node*);
     bool find(void*, size_t);
     bool find(void*,size_t,Node**);
