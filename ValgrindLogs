@@ -1,8 +1,0 @@
-/usr/bin/valgrind --tool=memcheck --xml=yes --xml-file=/tmp/valgrind --gen-suppressions=all --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no /home/zexult/CLionProjects/DEEZIA/cmake-build-debug/DEEZIA
-==5096==  If you believe this happened as a result of a stack
-==5096==  overflow in your program's main thread (unlikely but
-==5096==  possible), you can try to increase the size of the
-==5096==  main thread stack using the --main-stacksize= flag.
-==5096==  The main thread stack size used in this run was 8388608.
-
-Process finished with exit code 139 (interrupted by signal 11: SIGSEGV)
