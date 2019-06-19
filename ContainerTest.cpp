@@ -44,14 +44,18 @@ char* ContainerTest::rand_string(size_t len)
 double ContainerTest::testInsert(size_t size, int flag)
 {
     clock_t time(0), start, finish;
+
     switch (flag)
     {
         case CT_NORMAL:
             start = clock();
             for(int i = 0; i < size; i++)
             {
-                this->cont->insert(&i, sizeof(i));
-                this->cont->name = typeid(i).name();
+                auto __data = new data(&i, typeid(i).name());
+
+//                this->list.push_front(__data, sizeof(__data));
+                this->cont->insert(__data, sizeof(__data));
+
             }
             finish = clock();
             time = finish - start;
@@ -62,8 +66,10 @@ double ContainerTest::testInsert(size_t size, int flag)
             for(int i = 0; i < size; i++)
                 for(int j = 0; j < sqrt(size)/2; j++)
                 {
-                    this->cont->insert(&i, sizeof(i));
-                    this->cont->name = typeid(i).name();
+                    auto __data = new data(&i, typeid(i).name());
+
+//                    this->list.push_front(__data, sizeof(__data));
+                    this->cont->insert(__data, sizeof(__data));
                 }
             finish = clock();
             time = finish - start;
@@ -75,11 +81,15 @@ double ContainerTest::testInsert(size_t size, int flag)
             {
                 if (i % 2) {
                     char* str = rand_string((size_t) i);
-                    this->cont->name = typeid(str).name();
-                    this->cont->insert(str, (size_t) i);
+                    auto __data = new data(&str, typeid(str).name());
+
+//                    this->list.push_front(__data, sizeof(__data));
+                    this->cont->insert(__data, sizeof(__data));
                 } else {
-                    this->cont->name = typeid(i).name();
-                    this->cont->insert(&i, sizeof(i));
+                    auto __data = new data(&i, typeid(i).name());
+
+//                    this->list.push_front(__data, sizeof(__data));
+                    this->cont->insert(__data, sizeof(__data));
                 }
             }
             finish = clock();
@@ -92,11 +102,15 @@ double ContainerTest::testInsert(size_t size, int flag)
             {
                 if (i % 2) {
                     char* ch = rand_string(1);
-                    this->cont->name = typeid(ch).name();
-                    this->cont->insert(ch, sizeof(ch));
+                    auto __data = new data(&ch, typeid(ch).name());
+
+//                    this->list.push_front(__data, sizeof(__data));
+                    this->cont->insert(__data, sizeof(__data));
                 } else {
-                    this->cont->name = typeid(i).name();
-                    this->cont->insert(&i, sizeof(i));
+                    auto __data = new data(&i, typeid(i).name());
+
+//                    this->list.push_front(__data, sizeof(__data));
+                    this->cont->insert(__data, sizeof(__data));
                 }
             }
             finish = clock();
@@ -107,19 +121,19 @@ double ContainerTest::testInsert(size_t size, int flag)
     return (double) time / CLOCKS_PER_SEC;
 }
 
-double ContainerTest::testRemove(size_t n)
+double ContainerTest::testRemove(size_t num_elem)
 {
     double time;
     Container::Iterator *it = cont->newIterator();
 
-    if (n >= this->cont->size())
+    if (num_elem >= this->cont->size())
         time = testClear();
     else {
         clock_t start = clock();
 
         size_t i = 0;
         it = cont->begin();
-        while (i < n || !it->equals(cont->end())) {
+        while (i < num_elem || !it->equals(cont->end())) {
             it = cont->begin();
             printContainer();
             this->cont->remove(it);
@@ -148,21 +162,45 @@ double ContainerTest::testClear()
 void ContainerTest::printContainer()
 {
     Container::Iterator* it = cont->newIterator();
-    auto s_it = (RBTree::SetIterator*) it;
     size_t size;
 
     for(it = this->cont->begin(); !it->equals(this->cont->end()); it->goToNext())
     {
-        s_it = (RBTree::SetIterator*)it;
-        if(s_it->current->name == "i") {
-            int elem = *(int *) it->getElement(size);
-            printf("%20d | size (bytes) = %lu\n", elem, size);
+        auto _data  = static_cast<data*> (it->getElement(size));
+        if( !strcmp(_data->name, "i") ) {
+            printf("%20d | size (bytes) = %lu\n", *static_cast<int*>(_data->elem), size);
         }
-       if(s_it->current->name == "Pc"){
-           char* elem = (char*)it->getElement(size);
-           printf("%20s | size (bytes) = %lu\n", elem, size);
-       }
+        if( !strcmp(_data->name, "Pc") ){
+           printf("%20s | size (bytes) = %lu\n", static_cast<char*>(_data->elem), size);
+        }
 
     }
     cout << endl;
 }
+
+//int ContainerTest::AutoInsert(size_t num_elem, int flag)
+//{
+//    double time = testInsert(num_elem, flag);
+//
+//    bool success = true;
+//    size_t size;
+//
+//    for(size_t i = 0; i < this->list.size(); i++)
+//    {
+//        auto it = this->cont->newIterator();
+//        void* elem = this->list.front(size);
+//        this->list.pop_front();
+//        it = this->cont->find(elem, size);
+//
+//        success &= (it != nullptr);
+//    }
+//
+//    success? printf("Test passed. Elapsed time: %lf\n",time) : printf("Test failed.\n");
+//
+//    return success;
+//}
+//
+//int ContainerTest::AutoRemoveTest(size_t num_elem)
+//{
+//
+//}
