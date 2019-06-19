@@ -7,7 +7,6 @@
 
 int Set::insert(void* elem, size_t _size)
 {
-    auto _dat = static_cast<ContainerTest::data*>(elem);
     if(this->tree.find(elem,_size))
         return 1;
     else {
