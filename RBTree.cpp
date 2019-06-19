@@ -4,17 +4,17 @@
 
 #include "Mem.h"
 #include "RBTree.h"
+#include "ContainerTest.h"
 
 /** Node implementation **/
-Node::Node(void* data, size_t size, string _name)
+Node::Node(void* data, size_t size)
 {
     value = malloc(size);
 
     __size = size;
-    memcpy(value, data, size);
+    memmove(value, data, size);
     _color = RED;
     left = right = parent = nullptr;
-    name = _name;
 }
 
 /**                     **/
@@ -320,9 +320,10 @@ bool RBTree::find(void* val, size_t size, Node** node)
     return found;
 }
 
-int RBTree::insertVal(void* data, size_t __size, string __name)
+int RBTree::insertVal(void* val, size_t __size)
 {
-    Node *node = new Node(data, __size, __name);
+    auto _dat = static_cast<ContainerTest::data*>(val);
+    Node *node = new Node(val, __size);
     root = binSearchInsert(root, node);
     recolorAfterInsert(node);
     _size++;

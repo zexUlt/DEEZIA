@@ -11,21 +11,16 @@ int main()
     Mem mem(1000);
     Set s(mem);
 
-    size_t i,_size(5);
+    size_t _size(10);
     auto* ct = new ContainerTest(&s);
 
-    printf("%e\n",ct->testInsert(_size));
+    printf("%e\n",ct->testInsert(_size, CT_NORMAL));
 
+    cout << s.size() << endl;
 
-    Container::Iterator* it = s.newIterator();
+    ct->printContainer();
 
-    clock_t start = clock();
-
-    s.clear();
-
-    clock_t finish = clock();
-
-    cout << (double)(finish - start) / CLOCKS_PER_SEC << endl;
+    printf("%e\n",ct->testClear());
 
     return 0;
 }

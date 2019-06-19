@@ -10,6 +10,7 @@
 #include "MemoryManager.h"
 #include <bits/stdc++.h>
 
+
 enum color{RED, BLACK, DOUBLE_BLACK}; // DOUBLE_BLACK is temporary color
 
 struct Node {
@@ -19,10 +20,9 @@ public:
     Node* parent;
     color _color;
     void* value;
-    string name;
     size_t __size;
 
-    Node(void*, size_t, string);
+    Node(void*, size_t);
 };
 
 class RBTree {
@@ -68,7 +68,7 @@ public:
     RBTree() = default;
     explicit RBTree(MemoryManager& mem){root = _begin = nullptr; _end = new SetIterator(this,nullptr); _end->isEnd = true; _size = 0;}
 
-    int insertVal(void*, size_t, string);
+    int insertVal(void*, size_t);
     void deleteVal(Node*);
     bool find(void*, size_t);
     bool find(void*,size_t,Node**);

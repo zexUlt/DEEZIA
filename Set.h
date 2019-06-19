@@ -16,7 +16,6 @@ class Set : public AbstractSet, public RBTree{
 private:
     Exceptions e;
     RBTree tree;
-    string name;
 public:
     explicit Set(MemoryManager &mem):  AbstractSet(mem), tree(mem), e("Something gone wrong."){}
     int insert(void*, size_t) final; // is working
