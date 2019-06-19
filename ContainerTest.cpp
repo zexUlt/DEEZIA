@@ -51,10 +51,13 @@ double ContainerTest::testInsert(size_t size, int flag)
             start = clock();
             for(int i = 0; i < size; i++)
             {
-                auto __data = new data(&i, typeid(i).name());
+                auto __data = new data(&i, typeid(i).name(), sizeof(i));
 
-//                this->list.push_front(__data, sizeof(__data));
-                this->cont->insert(__data, sizeof(__data));
+//                this->list.push_front(&__data, sizeof(data));
+//                this->list.push_front(&i, sizeof(i));
+
+                this->cont->insert(&__data, sizeof(data));
+//                this->cont->insert(&i, sizeof(i));
 
             }
             finish = clock();
@@ -66,10 +69,13 @@ double ContainerTest::testInsert(size_t size, int flag)
             for(int i = 0; i < size; i++)
                 for(int j = 0; j < sqrt(size)/2; j++)
                 {
-                    auto __data = new data(&i, typeid(i).name());
+                    auto __data = new data(&i, typeid(i).name(), sizeof(i));
 
-//                    this->list.push_front(__data, sizeof(__data));
-                    this->cont->insert(__data, sizeof(__data));
+//                    this->list.push_front(&__data, sizeof(data));
+//                    this->list.push_front(&__data, sizeof(data));
+
+                    this->cont->insert(&__data, sizeof(__data));
+//                    this->cont->insert(&i, sizeof(i));
                 }
             finish = clock();
             time = finish - start;
@@ -81,15 +87,21 @@ double ContainerTest::testInsert(size_t size, int flag)
             {
                 if (i % 2) {
                     char* str = rand_string((size_t) i);
-                    auto __data = new data(&str, typeid(str).name());
+                    auto __data = new data(&str, typeid(str).name(), sizeof(str));
 
-//                    this->list.push_front(__data, sizeof(__data));
-                    this->cont->insert(__data, sizeof(__data));
+//                    this->list.push_front(&__data, sizeof(data));
+//                    this->list.push_front(&str, sizeof(str));
+
+                    this->cont->insert(&__data, sizeof(data));
+//                    this->cont->insert(&str, sizeof(str));
                 } else {
-                    auto __data = new data(&i, typeid(i).name());
+                    auto __data = new data(&i, typeid(i).name(), sizeof(i));
 
-//                    this->list.push_front(__data, sizeof(__data));
-                    this->cont->insert(__data, sizeof(__data));
+//                    this->list.push_front(__data, sizeof(data));
+//                    this->list.push_front(__data, sizeof(data));
+
+                    this->cont->insert(&__data, sizeof(data));
+//                    this->cont->insert(&i, sizeof(i));
                 }
             }
             finish = clock();
@@ -102,15 +114,21 @@ double ContainerTest::testInsert(size_t size, int flag)
             {
                 if (i % 2) {
                     char* ch = rand_string(1);
-                    auto __data = new data(&ch, typeid(ch).name());
+                    auto __data = new data(&ch, typeid(ch).name(), sizeof(ch));
 
-//                    this->list.push_front(__data, sizeof(__data));
-                    this->cont->insert(__data, sizeof(__data));
+//                    this->list.push_front(&__data, sizeof(__data));
+//                    this->list.push_front(&ch, sizeof(ch));
+
+                    this->cont->insert(&__data, sizeof(__data));
+//                    this->cont->insert(&ch, sizeof(ch));
                 } else {
-                    auto __data = new data(&i, typeid(i).name());
+                    auto __data = new data(&i, typeid(i).name(), sizeof(i));
 
-//                    this->list.push_front(__data, sizeof(__data));
-                    this->cont->insert(__data, sizeof(__data));
+//                    this->list.push_front(&__data, sizeof(__data));
+//                    this->list.push_front(&i, sizeof(i));
+
+                    this->cont->insert(&__data, sizeof(__data));
+//                    this->cont->insert(&i, sizeof(i));
                 }
             }
             finish = clock();
@@ -166,14 +184,16 @@ void ContainerTest::printContainer()
 
     for(it = this->cont->begin(); !it->equals(this->cont->end()); it->goToNext())
     {
-        auto _data  = static_cast<data*> (it->getElement(size));
+        auto _data  = *(data**) (it->getElement(size));
         if( !strcmp(_data->name, "i") ) {
-            printf("%20d | size (bytes) = %lu\n", *static_cast<int*>(_data->elem), size);
+            printf("%22d | size (bytes) = %lu\n", *(int*)(_data->elem), size);
         }
         if( !strcmp(_data->name, "Pc") ){
-           printf("%20s | size (bytes) = %lu\n", static_cast<char*>(_data->elem), size);
+           printf("%22s | size (bytes) = %lu\n", (char*)(_data->elem), size);
         }
 
+//        auto elem = *(int*)(it->getElement(size));
+//            printf("%22d | size (bytes) = %lu\n", elem, size);
     }
     cout << endl;
 }

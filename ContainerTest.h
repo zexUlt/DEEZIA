@@ -29,7 +29,7 @@ public:
         char name[20];
 
         data() = default;
-        explicit data(void* _data, string _name) {elem = _data; strcpy(this->name,_name.c_str());}
+        explicit data(void* _data, string _name, size_t size) {elem = malloc(size); memmove(elem, _data, size); strcpy(this->name,_name.c_str());}
     };
 
     char* rand_string(size_t);
