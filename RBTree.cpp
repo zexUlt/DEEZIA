@@ -322,7 +322,6 @@ bool RBTree::find(void* val, size_t size, Node** node)
 
 int RBTree::insertVal(void* val, size_t __size)
 {
-    auto _dat = static_cast<ContainerTest::data*>(val);
     Node *node = new Node(val, __size);
     root = binSearchInsert(root, node);
     recolorAfterInsert(node);
