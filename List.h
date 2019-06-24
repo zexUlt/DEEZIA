@@ -110,6 +110,7 @@ public:
     }
 
     size_t max_bytes() override {
+        // return 10e8; так как не реализован свой менеджер памяти - дефолтный будет говорить, что места "бесконечно"
         return _memory.maxBytes();
     }
 
@@ -130,7 +131,7 @@ public:
         return new Itr(head, this);
     }
 
-    Itr *end() override {
+    Itr *end() override { // спорная функция, я бы сделал end уникальным
         return new Itr(nullptr, this);
     }
 
@@ -138,33 +139,43 @@ public:
         auto *i = (Itr *) iter;
         if (i->curr == head)
         {
-            _memory.freeMem(i->curr->data);
-            delete[] i->curr;
+            //_memory.freeMem(i->curr->data);
+            //delete[] i->curr;
             head = head->pnext;
-            i->curr = head;
-            return;
+            //i->curr = head; // нам пофиг на итератор после удаления, так что это можно и не делать
+        } else {
+            Element *tmp = head;
+            for(tmp; tmp->pnext != nullptr; tmp = tmp->pnext)
+                if(tmp->pnext == i->curr)
+                {
+                    //tmp->pnext = i->curr->pnext;
+                    tmp = i->curr->pnext;
+                    break;
+                }
         }
-        Element *tmp = head;
-        for (tmp; tmp->pnext != nullptr; tmp = tmp->pnext)
-            if(tmp->pnext == i->curr)
-            {
-                tmp->pnext = i->curr->pnext;
-                break;
-            }
 
 
-
-        Element *next = i->curr->pnext;
+        //Element *next = i->curr->pnext;
         _memory.freeMem(i->curr->data);
         delete[] i->curr;
-        i->curr = next;
+        //i->curr = next;
         _size--;
     };
 
     void clear() override {
         Element *tmp = head;
-        for (tmp; tmp->pnext != nullptr; tmp = tmp->pnext)
-            _memory.freeMem(tmp->data);
+//         for (tmp; tmp->pnext != nullptr; tmp = tmp->pnext){
+//             _memory.freeMem(tmp->data);
+//             delete[] tmp;
+//         }
+        for(tmp; tmp->pnext != nullptr;)
+        {
+            auto to_del = tmp;
+            tmp = tmp->pnext;
+            _memory.freeMem(to_del->data);
+            delete[] to_del;
+            
+        }
 
         _size = 0;
     }
