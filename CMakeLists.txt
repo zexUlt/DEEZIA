@@ -6,9 +6,10 @@ SET(CMAKE_CXX_STANDARD 17)
 ADD_EXECUTABLE(
         DEEZIA Mem.h MemoryManager.h
         main.cpp
+        List.h List.cpp
         Set.cpp Set.h
         RBTree.h RBTree.cpp
         Container.h GroupContainer.h
         ContainerTest.h ContainerTest.cpp
         Exceptions.cpp Exceptions.h
-)
+        )
