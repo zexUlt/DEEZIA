@@ -14,10 +14,8 @@
  *
  */
 
-#define CT_NORMAL 1
-#define CT_EQUAL 2
-#define CT_STRINT 3
-#define CT_CHRINT 4
+
+enum ops{CT_NORMAL, CT_EQUAL, CT_STRINT, CT_CHRINT};
 
 class ContainerTest {
 private:
