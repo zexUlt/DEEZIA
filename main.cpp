@@ -4,23 +4,33 @@
 
 #include "Set.h"
 #include "Mem.h"
+#include "List.h"
 #include "ContainerTest.h"
 
-int main()
-{
+int main() {
     Mem mem(1000);
-    Set s(mem);
+    List l(mem);
 
-    size_t _size(10);
-    auto* ct = new ContainerTest(&s);
+    int a = 1;
+    size_t _size(10), sz;
 
-    printf("%e\n",ct->testInsert(_size, CT_NORMAL));
+    for (int i = 0; i < _size; i++)
+        l.push_front(&i, sizeof(i));
 
-    cout << s.size() << endl;
+    for(auto it = l.begin(); !it->equals(l.end()); it->goToNext())
+        cout << *(int*) it->getElement(sz) << " "; // segfault
+    cout << endl;
 
-    ct->printContainer();
+    auto it = l.begin();
+    while( !it->equals(l.end()))
+    {
+        it = l.begin();
+        l.remove(it);
+    }
 
-    printf("%e\n",ct->testClear());
+    for(auto it = l.begin(); !it->equals(l.end()); it->goToNext())
+        cout << *(int*)it->getElement(sz) << " ";
+    cout << endl;
 
     return 0;
 }
