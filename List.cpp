@@ -9,6 +9,7 @@ List::Vertx::Vertx(void *elem, size_t _size, List *list)
     if(elem != nullptr) {
         data = list->_memory.allocMem(_size);
         memcpy(data, elem, _size);
+        real = *(int*)elem;
     } else
         data = nullptr;
     size = _size;
@@ -43,11 +44,11 @@ int List::insert(Container::Iterator *iter, void *elem, size_t elemSize)
 {
     auto *i = (List::ListIterator *) iter;
     auto *added = new Vertx(elem, elemSize, this);
-    added->next = i->curr;
+    added->next = i->current;
     Vertx *tmp = head;
     while(tmp->next != nullptr)
     {
-        if(tmp->next == i->curr)
+        if(tmp->next == i->current)
             tmp ->next = added;
         tmp = tmp->next;
     }
@@ -85,25 +86,28 @@ List::ListIterator* List::begin()
 
 List::ListIterator* List::end()
 {
-    return new ListIterator(nullptr, this);
+    auto it = new ListIterator(nullptr, this);
+    it->isEnd = true;
+
+    return it;
 }
 
 void List::remove(Container::Iterator *iter)
 {
     auto *i = (ListIterator *) iter;
-    if (i->curr == head)
+    if (i->current == head)
         head = head->next;
     else {
         for(Vertx* tmp = head; tmp->next != nullptr; tmp = tmp->next)
-            if(tmp->next == i->curr)
+            if(tmp->next == i->current)
             {
-                tmp = i->curr->next;
+                tmp = i->current->next;
                 break;
             }
     }
 
-    _memory.freeMem(i->curr->data);
-    delete[] i->curr;
+    _memory.freeMem(i->current->data);
+    delete[] i->current;
 
     _size--;
 }
@@ -133,24 +137,39 @@ bool List::empty()
 
 // List Iterator
 
+List::ListIterator::ListIterator(List::Vertx *_current, List *_list)
+{
+    Exceptions ex("Something went wrong.");
+
+    e = &ex;
+    current = _current;
+    list = _list;
+    isEnd = false;
+}
+
 void* List::ListIterator::getElement(size_t &size)
 {
-    size = curr->size;
-    return curr->data;
+    if(this->current == nullptr)
+        throw this->e->NULL_NODE_CALL(this);
+
+    size = current->size;
+    return current->data;
 }
 
 bool List::ListIterator::hasNext()
 {
-    return (curr->next != nullptr);
+    return (current->next != nullptr);
 }
 
 void List::ListIterator::goToNext()
 {
-    curr = curr ->next;
+    if(this->current->next == nullptr)
+        this->isEnd = true;
+    this->current = this->current->next;
 }
 
 bool List::ListIterator::equals(Container::Iterator *right)
 {
     auto *rght = (ListIterator *) right;
-    return (list == rght->list);    
+    return (list == rght->list) && (this->current == rght->current) && (this->isEnd == rght->isEnd);
 }
