@@ -20,12 +20,12 @@ private:
 
         explicit Vertx(void *elem, size_t _size, List *list);
     };
-    
+    Exceptions e;
     Vertx *head;
     int _size;
 
 public:
-    explicit List(MemoryManager &mem) : AbstractList(mem){head = new Vertx(nullptr, 0, this); _size = 0;}
+    explicit List(MemoryManager &mem) : AbstractList(mem){head = nullptr; _size = 0;}
 
     class ListIterator : public Iterator {
         friend class List;

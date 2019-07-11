@@ -4,21 +4,21 @@
 
 #include "List.h"
 
-List::Vertx::Vertx(void *elem, size_t _size, List *list)
+List::Vertx::Vertx(void* elem, size_t _size, List* list)
 {
     if(elem != nullptr) {
         data = list->_memory.allocMem(_size);
         memcpy(data, elem, _size);
-        real = *(int*)elem;
+        real =* (int*)elem;
     } else
         data = nullptr;
     size = _size;
     next = nullptr;
 }
 
-int List::push_front(void *elem, size_t elemSize)
+int List::push_front(void* elem, size_t elemSize)
 {
-    Vertx *tmp = head;
+    Vertx* tmp = head;
     head = new Vertx(elem, elemSize, this);
     head->next = tmp;
     _size++;
@@ -27,7 +27,7 @@ int List::push_front(void *elem, size_t elemSize)
 
 void List::pop_front()
 {
-    Vertx *tmp = head;
+    Vertx* tmp = head;
     head = head->next;
     _memory.freeMem(tmp->data);
     delete[] tmp;
@@ -40,12 +40,12 @@ void* List::front(size_t &size)
     return head->data;
 }
 
-int List::insert(Container::Iterator *iter, void *elem, size_t elemSize)
+int List::insert(Container::Iterator* iter, void* elem, size_t elemSize)
 {
-    auto *i = (List::ListIterator *) iter;
-    auto *added = new Vertx(elem, elemSize, this);
+    auto* i = (List::ListIterator* ) iter;
+    auto* added = new Vertx(elem, elemSize, this);
     added->next = i->current;
-    Vertx *tmp = head;
+    Vertx* tmp = head;
     while(tmp->next != nullptr)
     {
         if(tmp->next == i->current)
@@ -66,9 +66,9 @@ size_t List::max_bytes()
     return (size_t) 10e8;
 }
 
-List::ListIterator* List::find(void *elem, size_t size)
+List::ListIterator* List::find(void* elem, size_t size)
 {
-    for (Vertx *tmp = head; tmp->next != nullptr; tmp = tmp->next)
+    for (Vertx* tmp = head; tmp->next != nullptr; tmp = tmp->next)
         if (size == tmp->size && memcmp(elem, tmp->data, size) == 0)
             return new ListIterator(tmp, this);
     return new ListIterator(nullptr, this);
@@ -92,16 +92,21 @@ List::ListIterator* List::end()
     return it;
 }
 
-void List::remove(Container::Iterator *iter)
+void List::remove(Container::Iterator* iter)
 {
-    auto *i = (ListIterator *) iter;
+    auto* i = (ListIterator* ) iter;
+    if(i->isEnd)
+        e.END_ITERATOR_REMOVING(i);
     if (i->current == head)
-        head = head->next;
+        if(head->next == nullptr)
+            i->isEnd = true;
+        else
+            head = head->next;
     else {
         for(Vertx* tmp = head; tmp->next != nullptr; tmp = tmp->next)
             if(tmp->next == i->current)
             {
-                tmp = i->current->next;
+                tmp->next = i->current->next;
                 break;
             }
     }
@@ -110,11 +115,16 @@ void List::remove(Container::Iterator *iter)
     delete[] i->current;
 
     _size--;
+    if (_size == 0){
+        i->current = nullptr;
+
+    }
+
 }
 
 void List::clear()
 {
-    for(Vertx *tmp = head; tmp->next != nullptr;)
+    for(Vertx* tmp = head; tmp->next != nullptr;)
     {
         auto to_del = tmp;
         tmp = tmp->next;
@@ -137,7 +147,7 @@ bool List::empty()
 
 // List Iterator
 
-List::ListIterator::ListIterator(List::Vertx *_current, List *_list)
+List::ListIterator::ListIterator(List::Vertx* _current, List* _list)
 {
     Exceptions ex("Something went wrong.");
 
@@ -168,8 +178,8 @@ void List::ListIterator::goToNext()
     this->current = this->current->next;
 }
 
-bool List::ListIterator::equals(Container::Iterator *right)
+bool List::ListIterator::equals(Container::Iterator* right)
 {
-    auto *rght = (ListIterator *) right;
+    auto* rght = (ListIterator* ) right;
     return (list == rght->list) && (this->current == rght->current) && (this->isEnd == rght->isEnd);
 }

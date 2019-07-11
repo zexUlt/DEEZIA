@@ -12,7 +12,7 @@ void Exceptions::what()
 Exceptions Exceptions::NULL_NODE_CALL(Container::Iterator* it)
 {
     auto ptr = (int*)it;
-    string msg = "Oops! Something gone wrong.\nTrying to use RBTRee::SetIterator::getElement on iterator with null current node at address: " + to_string(*ptr) + ".";
+    string msg = "Oops! Something gone wrong.\nTrying to use RBTRee::SetIterator::getElement on iterator with null current node at address: .";
     auto *ex = new Exceptions(msg.c_str());
     return *ex;
 }
@@ -20,7 +20,7 @@ Exceptions Exceptions::NULL_NODE_CALL(Container::Iterator* it)
 Exceptions Exceptions::END_ITERATOR_REMOVING(Container::Iterator* it)
 {
     auto ptr = (int*)it;
-    string msg = "Oops! Something gone wrong.\nTrying to remove end() iterator at address: " + to_string(*ptr) + ".";
+    string msg = "Oops! Something gone wrong.\nTrying to remove end() iterator at address: .";
     auto *ex = new Exceptions(msg.c_str());
     return *ex;
 }
