@@ -13,48 +13,48 @@
 class List : protected AbstractList {
 private:
     struct Vertx {
-        void *data;
+        void* data;
         size_t size;
-        Vertx *next;
-        int real;
+        Vertx* next;
 
-        explicit Vertx(void *elem, size_t _size, List *list);
+        explicit Vertx(void* elem, size_t _size, List* list);
     };
+
     Exceptions e;
-    Vertx *head;
+    Vertx* head;
     int _size;
 
 public:
-    explicit List(MemoryManager &mem) : AbstractList(mem){head = nullptr; _size = 0;}
+    explicit List(MemoryManager &mem) : AbstractList(mem), e("Something gone wrong."){head = nullptr; _size = 0;}
 
     class ListIterator : public Iterator {
         friend class List;
     private:
         Exceptions* e;
-        Vertx *current;
-        List *list;
+        Vertx* current;
+        List* list;
         bool isEnd;
 
-        ListIterator(Vertx *_current, List *_list);
+        explicit ListIterator(Vertx* _current, List* _list);
 
     public:
-        void *getElement(size_t &size) final;
+        void* getElement(size_t &size) final;
         bool hasNext() final;
         void goToNext() final;
-        bool equals(Container::Iterator *right) final;
+        bool equals(Container::Iterator* right) final;
     };
 
-    int push_front(void *elem, size_t elemSize) final;
+    int push_front(void* elem, size_t elemSize) final;
     void pop_front() final;
     void* front(size_t &size) final;
-    int insert(Container::Iterator *iter, void *elem, size_t elemSize) final;
+    int insert(Container::Iterator* iter, void* elem, size_t elemSize) final;
     int size() final;
     size_t max_bytes() final;
-    ListIterator* find(void *elem, size_t size) final;
+    ListIterator* find(void* elem, size_t size) final;
     ListIterator* newIterator() final;
     ListIterator* begin() final;
     ListIterator* end() final;
-    void remove(Container::Iterator *iter) final;
+    void remove(Container::Iterator* iter) final;
     void clear() final;
     bool empty() final;
 

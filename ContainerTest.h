@@ -5,6 +5,7 @@
 #ifndef DEEZIA_CONTAINERTEST_H
 #define DEEZIA_CONTAINERTEST_H
 
+#include "List.h"
 #include "GroupContainer.h"
 #include "Set.h"
 #include <ctime>
@@ -20,8 +21,8 @@ enum ops{CT_NORMAL, CT_EQUAL, CT_STRINT, CT_CHRINT};
 class ContainerTest {
 private:
     Set *cont;
-    //List list;
-public:
+    List list;
+private:
     struct data{
         void* elem;
         char name[20];
@@ -32,11 +33,11 @@ public:
 
     char* rand_string(size_t);
 
-//public:
-    explicit ContainerTest(Set *);
+public:
+    explicit ContainerTest(Set* container, List ls) : cont(container), list(ls){};
 
-//    int AutoInsert(size_t num_elem, int flag);
-//    int AutoRemoveTest();
+    int AutoInsert(size_t num_elem, int flag);
+    int AutoRemoveTest(size_t num_elem);
     double testClear(); // is working
     double testInsert(size_t num_elem, int flag); // is working
     double testRemove(size_t num_elem); // need fix

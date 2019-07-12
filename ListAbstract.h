@@ -1,4 +1,7 @@
+#pragma once
 #include "GroupContainer.h"
+
+
 
 // Абстрактный класс: однонаправленный список
 class AbstractList: public GroupContainer

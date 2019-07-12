@@ -9,7 +9,6 @@ List::Vertx::Vertx(void* elem, size_t _size, List* list)
     if(elem != nullptr) {
         data = list->_memory.allocMem(_size);
         memcpy(data, elem, _size);
-        real =* (int*)elem;
     } else
         data = nullptr;
     size = _size;

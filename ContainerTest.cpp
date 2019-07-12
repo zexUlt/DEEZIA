@@ -9,11 +9,6 @@
 #include <algorithm>
 #include <typeinfo>
 
-ContainerTest::ContainerTest(Set* _container)
-{
-    cont = _container;
-}
-
 char* ContainerTest::rand_string(size_t len)
 {
     char* rand_str = new char[len];
@@ -53,7 +48,7 @@ double ContainerTest::testInsert(size_t size, int flag)
             {
                 auto __data = new data(&i, typeid(i).name(), sizeof(i));
 
-//                this->list.push_front(&__data, sizeof(data));
+                this->list.push_front(&__data, sizeof(data));
 //                this->list.push_front(&i, sizeof(i));
 
                 this->cont->insert(&__data, sizeof(data));
@@ -70,12 +65,7 @@ double ContainerTest::testInsert(size_t size, int flag)
                 for(int j = 0; j < sqrt(size)/2; j++)
                 {
                     auto __data = new data(&i, typeid(i).name(), sizeof(i));
-
-//                    this->list.push_front(&__data, sizeof(data));
-//                    this->list.push_front(&__data, sizeof(data));
-
                     this->cont->insert(&__data, sizeof(__data));
-//                    this->cont->insert(&i, sizeof(i));
                 }
             finish = clock();
             time = finish - start;
@@ -89,7 +79,7 @@ double ContainerTest::testInsert(size_t size, int flag)
                     char* str = rand_string((size_t) i);
                     auto __data = new data(&str, typeid(str).name(), sizeof(str));
 
-//                    this->list.push_front(&__data, sizeof(data));
+                    this->list.push_front(&__data, sizeof(data));
 //                    this->list.push_front(&str, sizeof(str));
 
                     this->cont->insert(&__data, sizeof(data));
@@ -97,8 +87,7 @@ double ContainerTest::testInsert(size_t size, int flag)
                 } else {
                     auto __data = new data(&i, typeid(i).name(), sizeof(i));
 
-//                    this->list.push_front(__data, sizeof(data));
-//                    this->list.push_front(__data, sizeof(data));
+                    this->list.push_front(__data, sizeof(data));
 
                     this->cont->insert(&__data, sizeof(data));
 //                    this->cont->insert(&i, sizeof(i));
@@ -116,7 +105,7 @@ double ContainerTest::testInsert(size_t size, int flag)
                     char* ch = rand_string(1);
                     auto __data = new data(&ch, typeid(ch).name(), sizeof(ch));
 
-//                    this->list.push_front(&__data, sizeof(__data));
+                    this->list.push_front(&__data, sizeof(__data));
 //                    this->list.push_front(&ch, sizeof(ch));
 
                     this->cont->insert(&__data, sizeof(__data));
@@ -124,7 +113,7 @@ double ContainerTest::testInsert(size_t size, int flag)
                 } else {
                     auto __data = new data(&i, typeid(i).name(), sizeof(i));
 
-//                    this->list.push_front(&__data, sizeof(__data));
+                    this->list.push_front(&__data, sizeof(__data));
 //                    this->list.push_front(&i, sizeof(i));
 
                     this->cont->insert(&__data, sizeof(__data));
@@ -198,29 +187,71 @@ void ContainerTest::printContainer()
     cout << endl;
 }
 
-//int ContainerTest::AutoInsert(size_t num_elem, int flag)
-//{
-//    double time = testInsert(num_elem, flag);
-//
-//    bool success = true;
-//    size_t size;
-//
-//    for(size_t i = 0; i < this->list.size(); i++)
-//    {
-//        auto it = this->cont->newIterator();
-//        void* elem = this->list.front(size);
-//        this->list.pop_front();
-//        it = this->cont->find(elem, size);
-//
-//        success &= (it != nullptr);
-//    }
-//
-//    success? printf("Test passed. Elapsed time: %lf\n",time) : printf("Test failed.\n");
-//
-//    return success;
-//}
-//
-//int ContainerTest::AutoRemoveTest(size_t num_elem)
-//{
-//
-//}
+int ContainerTest::AutoInsert(size_t num_elem, int flag)
+{
+    double time = testInsert(num_elem, flag);
+
+    bool success = true;
+    size_t size;
+
+    auto l_it = this->list.newIterator();
+    auto it = this->cont->newIterator();
+
+    l_it = list.begin();
+
+    for(size_t i = 0; i < this->list.size(); i++)
+    {
+
+        void* elem = l_it->getElement(size);
+        it = this->cont->find(elem, size);
+
+        l_it->goToNext();
+
+        success &= (it != nullptr);
+    }
+
+    success? printf("Test passed. Elapsed time: %lf\n",time) : printf("Test failed.\n");
+
+    return success;
+}
+
+int ContainerTest::AutoRemoveTest(size_t num_elem)
+{
+    clock_t elapsed(0), start_1, start_2, end_1, end_2;
+    bool success = true;
+    size_t size;
+
+    auto l_it = this->list.newIterator();
+
+
+    l_it = this->list.begin();
+
+    for(size_t i = 0; i < this->list.size(); i++)
+    {
+        auto it = this->cont->newIterator();
+
+        void* elem = l_it->getElement(size);
+
+        start_1 = clock();
+        it = this->cont->find(elem, size);
+        end_1 = clock();
+
+        success &= (it != nullptr); // first time found
+
+        start_2 = clock();
+        this->cont->remove(it);
+        end_2 = clock();
+
+        it = this->cont->find(elem, size);
+
+        success &= (it == nullptr); // found after deletion out of Set
+
+        l_it->goToNext();
+
+        elapsed += (end_1 - start_1) + (end_2 - start_2);
+    }
+
+    success? printf("Test passed. Elapsed time: %lf",(double) elapsed / CLOCKS_PER_SEC) : printf("Test failed.");
+
+    return success;
+}
