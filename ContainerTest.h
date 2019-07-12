@@ -10,12 +10,6 @@
 #include "Set.h"
 #include <ctime>
 
-/** TODO LIST
- * Create automatic tests.
- *
- */
-
-
 enum ops{CT_NORMAL, CT_EQUAL, CT_STRINT, CT_CHRINT};
 
 class ContainerTest {

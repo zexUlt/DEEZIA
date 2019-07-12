@@ -180,9 +180,6 @@ void ContainerTest::printContainer()
         if( !strcmp(_data->name, "Pc") ){
            printf("%22s | size (bytes) = %lu\n", (char*)(_data->elem), size);
         }
-
-//        auto elem = *(int*)(it->getElement(size));
-//            printf("%22d | size (bytes) = %lu\n", elem, size);
     }
     cout << endl;
 }
