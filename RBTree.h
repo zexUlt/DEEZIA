@@ -14,6 +14,7 @@
 enum color{RED, BLACK, DOUBLE_BLACK}; // DOUBLE_BLACK is temporary color
 
 struct Node {
+    friend class Set;
 public:
     Node* left;
     Node* right;
@@ -23,6 +24,9 @@ public:
     size_t __size;
 
     Node(void*, size_t);
+
+    void* operator new(size_t);
+    void operator delete(void*);
 };
 
 class RBTree {

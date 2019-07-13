@@ -196,13 +196,11 @@ int ContainerTest::AutoInsert(size_t num_elem, int flag)
 
     l_it = list.begin();
 
-    for(size_t i = 0; i < this->list.size(); i++)
+    for(l_it; !l_it->equals(this->list.end()); l_it->goToNext())
     {
 
         void* elem = l_it->getElement(size);
         it = this->cont->find(elem, size);
-
-        l_it->goToNext();
 
         success &= (it != nullptr);
     }
@@ -223,7 +221,7 @@ int ContainerTest::AutoRemoveTest(size_t num_elem)
 
     l_it = this->list.begin();
 
-    for(size_t i = 0; i < this->list.size(); i++)
+    for(size_t i = 0; i < this->list.size() || this->cont->size() == 0; i++)
     {
         auto it = this->cont->newIterator();
 
@@ -238,6 +236,9 @@ int ContainerTest::AutoRemoveTest(size_t num_elem)
         start_2 = clock();
         this->cont->remove(it);
         end_2 = clock();
+
+        printContainer();
+        cout << endl;
 
         it = this->cont->find(elem, size);
 

@@ -6,6 +6,7 @@
 class Mem: public MemoryManager
 {
 public:
+    explicit Mem() = default;
     explicit Mem(size_t sz): MemoryManager(sz) {}
 
     void* allocMem(size_t sz) final

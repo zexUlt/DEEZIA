@@ -72,8 +72,8 @@ void Set::remove(Container::Iterator *iter)
 
     Node* ptr = it->current;
 
-    it->goToNext();
     tree.deleteVal(ptr);
+    tree.find(ptr->value, ptr->__size);
 }
 
 bool Set::empty()

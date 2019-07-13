@@ -2,11 +2,18 @@
 // Created by zexult on 27.03.19.
 //
 
-#include "Mem.h"
 #include "RBTree.h"
+#include "Set.h"
 #include "ContainerTest.h"
 
+/** TODO List:
+ * Fix recolorAfterDelete.
+ */
+
 /** Node implementation **/
+
+MemoryManager* Set::_memory = nullptr;
+
 Node::Node(void* data, size_t size)
 {
     value = malloc(size);
@@ -15,6 +22,16 @@ Node::Node(void* data, size_t size)
     memmove(value, data, size);
     _color = RED;
     left = right = parent = nullptr;
+}
+
+void* Node::operator new(size_t size)
+{
+    return Set::_memory->allocMem(size);
+}
+
+void Node::operator delete(void* ptr)
+{
+    Set::_memory->freeMem(ptr);
 }
 
 /**                     **/
@@ -308,7 +325,7 @@ bool RBTree::find(void* val, size_t size, Node** node)
     bool found = false;
     while(!found)
     {
-        if(size == pivot->__size && memcmp(pivot->value, val, size) == 0) {
+        if( pivot == nullptr || (size == pivot->__size && memcmp(pivot->value, val, size) == 0) ){
             found = true;
             *node = pivot;
         } else if( pivot->__size < size || (pivot->__size == size && memcmp(pivot->value, val, size) < 0) ) {
@@ -336,6 +353,7 @@ void RBTree::deleteVal(Node* node)
     {
         free(node->value);
         delete(node);
+        this->root = nullptr;
     } else if(node == this->root && this->root->right == nullptr && this->root->left != nullptr)
     {
         Node* tmp = _end->searchMaxInLeft(this->root->left);
